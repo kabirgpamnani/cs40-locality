@@ -1,0 +1,70 @@
+Names: Alex Shriver (ashriv02) and Kabir Pamnani (kpamna01)
+
+Help Received: TAs!!!!!! Thank you all
+
+Total Time Spent: 23 hours
+
+Implemented: Everything the spec says, including extra credit operations:
+    -rotate 270
+    -flip horizontal
+    -flip vertical
+    -transpose
+
+Architecture: 
+Architecture of UArray2b:
+Our implementation of UArray2b follows the architecture specified in the spec. 
+We are representing a UArray2b_T as a UArray2_T, where each element within the
+UArray2 represents one block. Each of these blocks, are represented as a single
+UArray_T. 
+
+Architecture of ppmtrans:
+We utilized a Pnm_ppm struct to hold the relevant information for the original
+image. We then created another Pnm_ppm struct for the transformed image. We 
+utilized apply functions for each transformation and passed them to the map 
+function specified by the user at the command line. These apply functions 
+populated a new 2-d array structure based on arithmatic for each index. That 
+transformed 2-d array was saved to the second Pnm_ppm struct. We called 
+Pnm_ppmwrite on that second struct, then freed all our heap-allocated memory.
+
+Measured Performance (PART E):
+
+Image size: 49939200 pixels  ---  149.8 MB
+
+Computer name and model: MacBook Air (M1, 2020) 
+CPU Type: Intel(R) Xeon(R) Silver 4214Y CPU @ 2.20GHz
+Clock Rate (cpu MHz): 2194.843
+
+                                    Mapping Method
+################################################################################
+| Rotation   |       Row-major   |     Col-major    |     Block-major
+################################################################################
+|            | Total:            |  Total:          |   Total:
+|     0      | 1109834629 ns     |  1096164646 ns   |   1232028376 ns
+|            | Per Pixel:        |  Per Pixel:      |   Per Pixel:
+|            | 22.22 ns          |  21.95 ns        |   24.67 ns
+################################################################################
+|            | Total:            |  Total:          |   Total:
+|    90      | 4963720605 ns     |  5819952425 ns   |   4507874311 ns
+|            | Per Pixel:        |  Per Pixel:      |   Per Pixel:
+|            | 99.40 ns          |  116.54 ns       |   90.27 ns
+################################################################################
+|            | Total:            |  Total:          |   Total:
+|    180     | 3463063828 ns     |  6877239050 ns   |   4635832917 ns
+|            | Per Pixel:        |  Per Pixel:      |   Per Pixel:
+|            | 69.34 ns          |  137.71 ns       |   92.8 ns
+################################################################################
+
+Remarks:
+    The results matched what we expected in our design document for the most 
+    part. One place we seem to be wrong is that we expected the col-major and 
+    row-major 90-degree rotations to be the same, but row-major was decently 
+    faster. We suspect this is because the most important hit rate is when
+    accessing the original image. 
+
+    In general, row-major mapping was the fastest mapping, while col-major was 
+    the slowest. The 0 degree rotation was by far the fastest rotation simply 
+    because it did not require any transformations. Block-major mapping was the
+    most consistent speed, in that its 90 and 180 degree rotations were 
+    basically the same speed. Overall, it appears blocked arrays are the more 
+    reliable representations of images for this program, as they produce the 
+    most consistently fast times.

@@ -1,0 +1,3 @@
+It took: 2567440308.000000 nanoseconds in total
+Number of pixels: 1470000
+Time per pixel: 1746.558033 nanoseconds
